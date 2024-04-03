@@ -56,6 +56,7 @@ class ProfessorServiceTest {
 	void criar_QuandoDadosInvalidos() {
 //		ProfessorEntradaDto professor = Mockito.mock(ProfessorEntradaDto.class, Answers.RETURNS_MOCKS);
 //
+//		professor.setContratacao("20-02-2002");
 //
 //		ErroDeNegocioException e =
 //				Assertions.assertThrows(ErroDeNegocioException.class,
@@ -97,7 +98,7 @@ class ProfessorServiceTest {
 	}
 
 	@Test
-	void alterar_QuandoIdNãoCadastrado(){
+	void alterar_QuandoIdNaoCadastrado(){
 
 		ProfessorEntradaDto professor = Mockito.mock(ProfessorEntradaDto.class, Answers.RETURNS_MOCKS);
 		Professor professorWithId = Mockito.mock(Professor.class, Answers.RETURNS_MOCKS);
