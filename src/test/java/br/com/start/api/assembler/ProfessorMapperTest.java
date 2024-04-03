@@ -2,6 +2,7 @@ package br.com.start.api.assembler;
 
 import br.com.start.api.dto.ProfessorEntradaDto;
 import br.com.start.api.dto.ProfessorSaidaDto;
+import br.com.start.domain.enums.TipoFormacao;
 import br.com.start.domain.model.Professor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -11,6 +12,8 @@ import org.mockito.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -57,10 +60,22 @@ public class ProfessorMapperTest {
 //        Professor professor = Mockito.mock(Professor.class, Answers.RETURNS_MOCKS);
 
         Professor professor = new Professor();
+        professor.setId(1L);
         professor.setNome("Guilherme");
+        professor.setDisciplina("Matemática");
+        professor.setEmail("guilherme@hotmail.com");
+        professor.setFormacao(TipoFormacao.DOUTOR);
+        professor.setContratacao(LocalDate.of(2022, 2, 20));
+        professor.setSalario(new BigDecimal(200));
 
         ProfessorSaidaDto professorSaida = new ProfessorSaidaDto();
+        professorSaida.setId(1L);
         professorSaida.setNome("Guilherme");
+        professorSaida.setDisciplina("Matemática");
+        professorSaida.setEmail("guilherme@hotmail.com");
+        professorSaida.setFormacao(TipoFormacao.DOUTOR);
+        professorSaida.setContratacao(LocalDate.of(2022, 2, 20));
+        professorSaida.setSalario(new BigDecimal(200));
 
         Mockito.when(modelMapper.map(Mockito.eq(professor), Mockito.eq(ProfessorSaidaDto.class))).thenReturn(professorSaida);
 
@@ -69,6 +84,12 @@ public class ProfessorMapperTest {
 
         Assertions.assertNotNull(professorResult);
         Assertions.assertEquals(professor.getNome(), professorResult.getNome());
+        Assertions.assertEquals(professor.getId(), professorResult.getId());
+        Assertions.assertEquals(professor.getEmail(), professorResult.getEmail());
+        Assertions.assertEquals(professor.getFormacao(), professorResult.getFormacao());
+        Assertions.assertEquals(professor.getSalario(), professorResult.getSalario());
+        Assertions.assertEquals(professor.getDisciplina(), professorResult.getDisciplina());
+        Assertions.assertEquals(professor.getContratacao(), professorResult.getContratacao());
 
     }
 

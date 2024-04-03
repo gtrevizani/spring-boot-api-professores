@@ -13,7 +13,6 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
 public class ProfessorSaidaDto {
 
 	private Long id;

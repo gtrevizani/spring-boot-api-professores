@@ -17,7 +17,6 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-@ToString
 @Entity(name = "professor")
 public class Professor {
 
