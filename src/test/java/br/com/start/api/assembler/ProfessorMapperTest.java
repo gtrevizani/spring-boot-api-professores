@@ -3,12 +3,12 @@ package br.com.start.api.assembler;
 import br.com.start.api.dto.ProfessorEntradaDto;
 import br.com.start.api.dto.ProfessorSaidaDto;
 import br.com.start.domain.model.Professor;
-import br.com.start.domain.repository.ProfessorRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.Answers;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.api.TestInstance;
+import org.mockito.*;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Collections;
@@ -18,48 +18,77 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ProfessorMapperTest {
 
-    @Autowired
+    @InjectMocks
     private ProfessorMapper professorMapper;
 
-    @Autowired
-    private ProfessorRepository repository;
+    @Mock
+    private ModelMapper modelMapper;
+
+    @BeforeAll
+    public void setup(){
+        MockitoAnnotations.openMocks(this);
+    }
 
 
     @Test
     public void parseProfessorSaidaDto_toProfessor(){
 
-        ProfessorSaidaDto professor = Mockito.mock(ProfessorSaidaDto.class, Answers.RETURNS_MOCKS);
+        ProfessorSaidaDto professorOutput = new ProfessorSaidaDto();
+        professorOutput.setNome("Guilherme");
 
-        Professor professor1 = professorMapper.parseProfessor(professor);
+        Professor professor = new Professor();
+        professor.setNome("Guilherme");
 
-        Assertions.assertNotNull(professor1);
-        Assertions.assertEquals(professor.getNome(), professor1.getNome());
+        Mockito.when(modelMapper.map(Mockito.eq(professorOutput), Mockito.eq(Professor.class))).thenReturn(professor);
+
+        Professor professorResult = professorMapper.parseOutputToEntity(professorOutput);
+
+        Assertions.assertNotNull(professorResult);
+        Assertions.assertEquals(professor.getNome(), professorResult.getNome());
 
     }
 
     @Test
     public void parseProfessor_toProfessorSaidaDtoSave(){
 
-        Professor professor = Mockito.mock(Professor.class, Answers.RETURNS_MOCKS);
+//        Professor professor = Mockito.mock(Professor.class, Answers.RETURNS_MOCKS);
 
-        ProfessorSaidaDto professor1 = professorMapper.parseProfessorSaidaSave(professor);
+        Professor professor = new Professor();
+        professor.setNome("Guilherme");
 
-        Assertions.assertNotNull(professor1);
-        Assertions.assertEquals(professor.getNome(), professor1.getNome());
+        ProfessorSaidaDto professorSaida = new ProfessorSaidaDto();
+        professorSaida.setNome("Guilherme");
+
+        Mockito.when(modelMapper.map(Mockito.eq(professor), Mockito.eq(ProfessorSaidaDto.class))).thenReturn(professorSaida);
+
+
+        ProfessorSaidaDto professorResult = professorMapper.parseEntityToOutput(professor);
+
+        Assertions.assertNotNull(professorResult);
+        Assertions.assertEquals(professor.getNome(), professorResult.getNome());
 
     }
 
     @Test
     public void parseProfessorEntradaDto_toProfessorSaidaDto(){
-        ProfessorEntradaDto professor = Mockito.mock(ProfessorEntradaDto.class, Answers.RETURNS_MOCKS);
+        ProfessorEntradaDto professor = new ProfessorEntradaDto();
+        professor.setContratacao("10/10/2024");
+        professor.setNome("Guilherme");
+
+        ProfessorSaidaDto professorSaida = new ProfessorSaidaDto();
+        professorSaida.setNome("Guilherme");
+
+        Mockito.when(modelMapper.map(Mockito.eq(professor), Mockito.eq(ProfessorSaidaDto.class))).thenReturn(professorSaida);
 
 
-        ProfessorSaidaDto professor1 = professorMapper.parseProfessorSaida(professor);
+        ProfessorSaidaDto professorResult = professorMapper.parseInputToOutput(professor);
 
-        Assertions.assertNotNull(professor1);
-        Assertions.assertEquals(professor.getNome(), professor1.getNome());
+
+        Assertions.assertNotNull(professorResult);
+        Assertions.assertEquals(professor.getNome(), professorResult.getNome());
 
     }
 
@@ -69,7 +98,7 @@ public class ProfessorMapperTest {
         ProfessorEntradaDto professor = Mockito.mock(ProfessorEntradaDto.class, Answers.RETURNS_MOCKS);
         Professor professor1 = Mockito.mock(Professor.class, Answers.RETURNS_MOCKS);
 
-        professorMapper.parseProfessorOptional(professor, professor1);
+        professorMapper.parseInputToEntity(professor, professor1);
 
         Assertions.assertNotNull(professor1);
         Assertions.assertEquals(professor.getNome(), professor1.getNome());
@@ -79,11 +108,21 @@ public class ProfessorMapperTest {
     @Test
     public void parseListProfessor_toListProfessorSaidaDto(){
         List<Professor> professor = Collections.singletonList(Mockito.mock(Professor.class, Answers.RETURNS_MOCKS));
+        Mockito.when(modelMapper.map(Mockito.eq(professor), Mockito.eq(ProfessorSaidaDto.class))).thenReturn(new ProfessorSaidaDto());
 
-        List<ProfessorSaidaDto> professor1 = professorMapper.parseProfessorList(professor);
+        List<ProfessorSaidaDto> professor1 = professorMapper.parseEntityListToOutputList(professor);
 
         Assertions.assertNotNull(professor1);
         Assertions.assertEquals(professor.size(), professor1.size());
+    }
+
+    @Test
+    public void parseLocalDate(){
+
+        ProfessorEntradaDto professor = Mockito.mock(ProfessorEntradaDto.class, Answers.RETURNS_MOCKS);
+
+        professorMapper.parseStringToLocalDate(professor.getContratacao());
+
     }
 
 }

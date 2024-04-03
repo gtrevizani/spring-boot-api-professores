@@ -32,11 +32,11 @@ public class ProfessorService {
             throw new ErroDeNegocioException(TabelaDeErros.EMAIL_JA_CADASTRADO);
         }
 
-        mapper.parseLocalDate(entradaDto.getContratacao());
-        ProfessorSaidaDto professorSaidaDto = mapper.parseProfessorSaida(entradaDto);
-        Professor professor = mapper.parseProfessor(professorSaidaDto);
+        mapper.parseStringToLocalDate(entradaDto.getContratacao());
+        ProfessorSaidaDto professorSaidaDto = mapper.parseInputToOutput(entradaDto);
+        Professor professor = mapper.parseOutputToEntity(professorSaidaDto);
         Professor professorBanco = repository.save(professor);
-        return mapper.parseProfessorSaidaSave(professorBanco);
+        return mapper.parseEntityToOutput(professorBanco);
 
     }
 
@@ -53,7 +53,7 @@ public class ProfessorService {
         }
 
         Professor professor = optional.get();
-        mapper.parseProfessorOptional(entradaDto, professor);
+        mapper.parseInputToEntity(entradaDto, professor);
         repository.save(professor);
     }
     public ProfessorSaidaDto consultar(Long id)  {
@@ -64,7 +64,7 @@ public class ProfessorService {
         }
 
         Professor professorBanco = optional.get();
-        return mapper.parseProfessorSaidaSave(professorBanco);
+        return mapper.parseEntityToOutput(professorBanco);
     }
     public void excluir(Long id)  {
 
@@ -81,6 +81,6 @@ public class ProfessorService {
             throw new ErroDeNegocioException(TabelaDeErros.SEM_DADOS);
         }
 
-        return mapper.parseProfessorList(professor);
+        return mapper.parseEntityListToOutputList(professor);
     }
 }

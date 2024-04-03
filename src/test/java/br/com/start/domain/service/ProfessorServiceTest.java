@@ -212,14 +212,14 @@ class ProfessorServiceTest {
 
 		//When
 		when(repository.findAll()).thenReturn(professorList);
-		when(mapper.parseProfessorList(professorList)).then(invocation -> professorList);
+		when(mapper.parseEntityListToOutputList(professorList)).then(invocation -> professorList);
 		List<ProfessorSaidaDto> resultList = assertDoesNotThrow(() -> service.listar());
 
 		//Then
 		Assertions.assertEquals(2, resultList.size());
 		Assertions.assertEquals(2, professorList.size());
 		verify(repository, times(1)).findAll();
-		verify(mapper, times(1)).parseProfessorList(professorList);
+		verify(mapper, times(1)).parseEntityListToOutputList(professorList);
 		verifyNoMoreInteractions(repository, mapper);
 	}
 
@@ -230,7 +230,7 @@ class ProfessorServiceTest {
 
 		//When
 		when(repository.findAll()).thenReturn(professorList);
-		when(mapper.parseProfessorList(professorList)).then(invocation -> professorList);
+		when(mapper.parseEntityListToOutputList(professorList)).then(invocation -> professorList);
 
 		ErroDeNegocioException e =
 				Assertions.assertThrows(ErroDeNegocioException.class,
